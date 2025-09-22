@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Loja 😭🙏</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .produto, .carrinho-item { margin-bottom: 10px; }
+    .produto button { margin-left: 10px; }
+    .carrinho { margin-top: 20px; border-top: 1px solid #ccc; padding-top: 20px; }
+    .pagamento { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>Produtos Disponíveis 💔😭🙏</h1>
+    <div 
+      class="produto" 
+      v-for="(produto, idx) in produtos" 
+      :key="produto.id"
+    >
+      <strong>{{ produto.nome }}</strong>
+      — 
+      <span 
+        v-bind:title="'Preço 💵: R$ ' + produto.preco.toFixed(2)"
+      >
+        R$ {{ produto.preco.toFixed(2) }}
+      </span>
+      <button v-on:click="adicionarAoCarrinho(idx)">
+        🛒
+      </button>
+    </div>
+
+    <div class="carrinho" v-if="carrinho.length > 0">
+      <h2>Seu Carrinho 🛒</h2>
+      <div 
+        class="carrinho-item" 
+        v-for="(item, idx) in carrinho" 
+        :key="idx"
+      >
+        {{ item.nome }}  
+        (<small>R$ {{ item.preco.toFixed(2) }}</small>)  
+        <button v-on:click="removerDoCarrinho(idx)">❌</button>
+      </div>
+    </div>
+
+    <div class="pagamento" v-show="carrinho.length > 0">
+      <h2>Opções de Pagamento 💰</h2>
+      <p>Total a pagar: R$ {{ total.toFixed(2) }} 🤑🤑</p>
+      <button v-on:click="finalizarCompra">Finalizar Compra 💀💀</button>
+    </div>
+  </div>
+
+  <script>
+    const { createApp, ref, computed } = Vue;
+
+    createApp({
+      setup() {
+        const produtos = ref([
+          { id: 1, nome: 'Produto do medo 😱😱', preco: 39.90 },
+          { id: 2, nome: 'Produto do nerd ☝️🤓', preco: 15.50 },
+          { id: 3, nome: 'Produto do MAU 😈😈', preco: 9.99 }
+        ]);
+
+        const carrinho = ref([]);
+
+        const total = computed(() =>
+          carrinho.value.reduce((sum, p) => sum + p.preco, 0)
+        );
+
+        function adicionarAoCarrinho(index) {
+          carrinho.value.push(produtos.value[index]);
+        }
+
+        function removerDoCarrinho(index) {
+          carrinho.value.splice(index, 1);
+        }
+
+        function finalizarCompra() {
+          alert(`ok, deu: R$ ${total.value.toFixed(2)} 👍`);
+          carrinho.value = [];
+        }
+
+        return {
+          produtos,
+          carrinho,
+          total,
+          adicionarAoCarrinho,
+          removerDoCarrinho,
+          finalizarCompra
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
